@@ -5,21 +5,60 @@ import java.util.List;
 import cz.pv168.model.Land;
 import cz.pv168.model.Ownership;
 import cz.pv168.model.Person;
-import cz.pv168.utils.EntityException;
+import cz.pv168.utils.DatabaseException;
 
 public interface OwnershipManager {
-
-   public void createOwnership(Ownership ownership) throws EntityException;
-
-   public void updateOwnerShip(Ownership ownership) throws EntityException;
-
-   public void removeOwnership(Ownership ownership) throws EntityException;
-
-   public List<Person> getListOfPersonsOfLand() throws EntityException;
-
-   public List<Land> getListOfLandsOfPerson()throws EntityException;
-
-   public List<Ownership> getOwnershipList()throws EntityException;
-
-   public Ownership getOwnershipById(Long id)throws EntityException;
+   /**
+    * 
+    * @param ownership
+    * @throws DatabaseException
+    */
+   public void createOwnership(Ownership ownership) throws DatabaseException;
+   /**
+    * 
+    * @param ownership
+    * @throws DatabaseException
+    */
+   public void updateOwnerShip(Ownership ownership) throws DatabaseException;
+   /**
+    * 
+    * @param ownership
+    * @throws DatabaseException
+    */
+   public void removeOwnership(Ownership ownership) throws DatabaseException;
+   /**
+    * 
+    * @return
+    * @throws DatabaseException
+    */
+   public List<Person> getListOfPersonsOfLand() throws DatabaseException;
+   /**
+    * 
+    * @return
+    * @throws DatabaseException
+    */
+   public List<Land> getListOfLandsOfPerson()throws DatabaseException;
+   /**
+    * 
+    * @return
+    * @throws DatabaseException
+    */
+   public List<Ownership> getOwnershipList()throws DatabaseException;
+   /**
+    * 
+    * @param id
+    * @return
+    * @throws DatabaseException
+    */
+   public Ownership getOwnershipById(Long id)throws DatabaseException;
+   /**
+    * 
+    * @throws DatabaseException
+    */
+   public void createTableOwnership() throws DatabaseException;
+   /**
+    * 
+    * @throws DatabaseException
+    */
+   public void dropTableOwnership() throws DatabaseException;
 }
