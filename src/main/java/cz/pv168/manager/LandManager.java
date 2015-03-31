@@ -44,4 +44,8 @@ public interface LandManager {
     * @throws DatabaseException
     */
    public  List<Land> getLandByArea(String catastralArea) throws DatabaseException;
+   
+   public void dropTableLand() throws DatabaseException;
+   
+   public void createTableLand() throws DatabaseException;
 }

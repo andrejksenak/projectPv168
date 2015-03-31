@@ -228,7 +228,7 @@ public class LandDaoImpl extends GenericDaoImpl implements LandDao {
    }
 
    // ==============================================================================================-
-   public void droptableLand() throws DatabaseException {
+   public void dropTableLand() throws DatabaseException {
 
       StringBuilder sql = new StringBuilder();
       sql.append("drop table proj.land");

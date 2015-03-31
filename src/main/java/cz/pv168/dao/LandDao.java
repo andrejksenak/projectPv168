@@ -18,5 +18,9 @@ public interface LandDao {
    public abstract List<Land> getLandList() throws DatabaseException;
 
    public abstract List<Land> getLandByArea(String catastralArea) throws DatabaseException;
+   
+   public abstract void dropTableLand() throws DatabaseException;
+ 
+   public abstract void createTableLand() throws DatabaseException;
 
 }

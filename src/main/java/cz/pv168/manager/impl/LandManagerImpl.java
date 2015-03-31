@@ -49,4 +49,14 @@ public class LandManagerImpl implements LandManager {
    }
    
 
+   public void dropTableLand() throws DatabaseException {
+      landDao.dropTableLand();
+   }
+ 
+   public void createTableLand() throws DatabaseException {
+      landDao.createTableLand();
+   }
+
+   
+
 }
