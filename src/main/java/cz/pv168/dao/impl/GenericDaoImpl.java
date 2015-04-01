@@ -22,7 +22,7 @@ public class GenericDaoImpl {
       this.dataSource = dataSource;
    }
    
-   protected void connectAndExecute(String sql) throws DatabaseException{
+   public void connectAndExecute(String sql) throws DatabaseException{
       Connection conn = null;
       PreparedStatement st = null;
       try {

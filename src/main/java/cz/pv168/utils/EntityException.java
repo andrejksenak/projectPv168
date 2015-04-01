@@ -6,7 +6,7 @@ public class EntityException extends Exception {
 
    
    public EntityException(String msg) {
-      super(msg);
+      super("EntityException : ERROR WITH VALIDATING ENTITY - " + msg);
   }
 
   public EntityException(Throwable cause) {

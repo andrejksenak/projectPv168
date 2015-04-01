@@ -17,7 +17,7 @@ public class OwnershipManagerImpl implements OwnershipManager {
 
    private OwnershipDao ownershipDao;
    
-   DataSource        ds;
+   private DataSource        ds;
    
    public OwnershipManagerImpl(){
       ds = ConnectorDB.initDatasource(); 

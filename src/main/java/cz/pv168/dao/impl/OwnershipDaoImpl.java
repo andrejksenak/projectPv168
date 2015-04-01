@@ -149,7 +149,6 @@ public class OwnershipDaoImpl extends GenericDaoImpl implements OwnershipDao {
     */
    public List<Person> getListOfPersonsOfLand() {
       return null;
-
    }
 
    // ============================================================================================
@@ -159,7 +158,6 @@ public class OwnershipDaoImpl extends GenericDaoImpl implements OwnershipDao {
     * @see cz.pv168.dao.impl.OwnershipDao#getListOfLandsOfPerson()
     */
    public List<Land> getListOfLandsOfPerson() {
-
       return null;
    }
 
@@ -238,6 +236,37 @@ public class OwnershipDaoImpl extends GenericDaoImpl implements OwnershipDao {
       return ownership;
    }
 
+   /**
+    * 
+    */
+   public void createTableOwnership() throws DatabaseException {
+      StringBuilder sql = new StringBuilder();
+
+      sql.append("  create table proj.Ownership(");
+      sql.append("  ownerShipID INTEGER NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY,  ");
+      sql.append("  personID INTEGER NOT NULL,");
+      sql.append("  landId INTEGER NOT NULL,");
+      sql.append("  start_date DATE,");
+      sql.append("  end_date DATE,");
+      sql.append("  FOREIGN KEY (personID) REFERENCES proj.Person(personId), ");
+      sql.append("  FOREIGN KEY (landId) REFERENCES proj.Land(landId)");
+
+      sql.append(" )");
+      connectAndExecute(sql.toString());
+      LOGGER.debug("Table Ownership created");
+   }
+
+   /**
+    * 
+    */
+   public void dropTableOwnership() throws DatabaseException {
+      StringBuilder sql = new StringBuilder();
+      sql.append("drop table proj.Ownership");
+      connectAndExecute(sql.toString());
+      LOGGER.debug("Table Ownership dropped");
+
+   }
+
    // ============================================================================================
    // ==============================================================================================-
    // ADDITIONAL FUNCTIONS FOR DATA HANDLING
@@ -251,20 +280,23 @@ public class OwnershipDaoImpl extends GenericDaoImpl implements OwnershipDao {
    private Boolean validateOwnership(Ownership ownership)
          throws EntityException {
 
-      
-      if (ownership.getPersonID()==null) {
-         throw new EntityException("Cannot create ownership with person ID = null");
+      if (ownership.getPersonID() == null) {
+         throw new EntityException(
+               "Cannot create ownership with person ID = null");
       }
 
-      if (ownership.getLandId()==null) {
-         throw new EntityException("Cannot create ownership with land ID = null");
+      if (ownership.getLandId() == null) {
+         throw new EntityException(
+               "Cannot create ownership with land ID = null");
       }
-      if (ownership.getStartDate() == null){
-         throw new EntityException("Cannot create ownership with StartDate = null");
+      if (ownership.getStartDate() == null) {
+         throw new EntityException(
+               "Cannot create ownership with StartDate = null");
       }
-      //TODO REVALIDE CONDITION
-      if (ownership.getStartDate() != null && ownership.getEndDate()!=null && ownership.getStartDate().compareTo(ownership.getEndDate())<0){
-         throw new EntityException("Cannot create ownership with StartDate>ENDDATE");
+      if (ownership.getStartDate() != null && ownership.getEndDate() != null
+            && ownership.getStartDate().compareTo(ownership.getEndDate()) < 0) {
+         throw new EntityException(
+               "Cannot create ownership with StartDate>ENDDATE");
       }
       return true;
    }
@@ -323,30 +355,4 @@ public class OwnershipDaoImpl extends GenericDaoImpl implements OwnershipDao {
       LOGGER.debug("____________________________________________________");
    }
 
-   @Override
-   public void createTableOwnership() throws DatabaseException {
-      StringBuilder sql = new StringBuilder();
-
-      sql.append("  create table proj.Ownership(");
-      sql.append("  ownerShipID INTEGER NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY,  ");
-      sql.append("  personID INTEGER NOT NULL,");
-      sql.append("  landId INTEGER NOT NULL,");
-      sql.append("  start_date DATE,");
-      sql.append("  end_date DATE,");
-      sql.append("  FOREIGN KEY (personID) REFERENCES proj.Person(personId), ");
-      sql.append("  FOREIGN KEY (landId) REFERENCES proj.Land(landId)");
-
-      sql.append(" )");
-      connectAndExecute(sql.toString());
-      LOGGER.debug("Table Ownership created");
-   }
-
-   @Override
-   public void dropTableOwnership() throws DatabaseException {
-      StringBuilder sql = new StringBuilder();
-      sql.append("drop table proj.Ownership");
-      connectAndExecute(sql.toString());
-      LOGGER.debug("Table Ownership dropped");
-
-   }
 }
