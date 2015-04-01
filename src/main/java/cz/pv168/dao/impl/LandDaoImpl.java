@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 
 import cz.pv168.dao.LandDao;
 import cz.pv168.model.Land;
-import cz.pv168.model.Person;
 import cz.pv168.utils.ConnectorDB;
 import cz.pv168.utils.DatabaseException;
 import cz.pv168.utils.EntityException;
@@ -62,7 +61,7 @@ public class LandDaoImpl extends GenericDaoImpl implements LandDao {
 	         ConnectorDB.close(conn, st);
 	      }
 
-	      LOGGER.debug("Person created : " + land.toString());
+	      LOGGER.debug(" created : " + land.toString());
 	}
 
 	public void updateLand(Land land) throws DatabaseException {
@@ -122,7 +121,7 @@ public class LandDaoImpl extends GenericDaoImpl implements LandDao {
 	public Land getLandById(Long id) throws DatabaseException{
 		StringBuilder sql = new StringBuilder();
 	      Land land = null;
-	      sql.append(" SELECT size,buildUpArea,catastralArea,land_type,notes");
+	      sql.append(" SELECT landID,size,buildUpArea,catastralArea,land_type,notes");
 	      sql.append(" FROM Land ");
 	      sql.append(" WHERE landID = ? ");
 
@@ -140,15 +139,15 @@ public class LandDaoImpl extends GenericDaoImpl implements LandDao {
 	         }
 
 	      } catch (SQLException e1) {
-	         throw new DatabaseException("db connection problem" + e1);
+	         throw new DatabaseException("getLandById : db connection problem" + e1);
 	      } finally {
 	         ConnectorDB.close(conn, st);
 	      }
 
 	      if (land == null) {
-	         throw new DatabaseException("Person is not existing. ID : " + id);
+	         throw new DatabaseException("Land is not existing. ID : " + id);
 	      } else {
-	         LOGGER.debug("Person with id :" + id + "  -   " + land.toString());
+	         LOGGER.debug("Land with id :" + id + "  -   " + land.toString());
 	      }
 	      return land;
 	}
@@ -156,7 +155,7 @@ public class LandDaoImpl extends GenericDaoImpl implements LandDao {
 	public List<Land> getLandList() throws DatabaseException{
 		  StringBuilder sql = new StringBuilder();
 	      List<Land> list = new ArrayList<Land>();
-	      sql.append(" SELECT size,buildUpArea,catastralArea,land_type,notes");
+	      sql.append(" SELECT landID,size,buildUpArea,catastralArea,land_type,notes");
 	      sql.append(" FROM Land ");
 	
 	      Connection conn = null;
@@ -242,20 +241,20 @@ public class LandDaoImpl extends GenericDaoImpl implements LandDao {
    // ==============================================================================================
    /**
     * 
-    * @param person
+    * @param Land
     * @return
     * @throws EntityException
     */
    private Boolean validateLand(Land land) throws EntityException {
 
       StringBuilder errMsg = new StringBuilder();
-      if (land.getSize() == null ) {
+      if (land.getSize() == null || land.getSize()<0) {
          errMsg.append("Validation Error : Size of land is Empty  \n");
       }
-      if (land.getBuildUpArea() == null ) {
+      if (land.getBuildUpArea() == null || land.getBuildUpArea()<0 ) {
          errMsg.append("Validation Error : BuildUpArea of land is Empty  \n");
       }
-      if (land.getCatastralArea() == null) {
+      if (land.getCatastralArea() == null || land.getCatastralArea().isEmpty()) {
          errMsg.append("Validation Error : CatastralArea of land is Empty  \n");
       }
       if (land.getType() == null || "".equals(land.getType())) {
@@ -280,12 +279,12 @@ public class LandDaoImpl extends GenericDaoImpl implements LandDao {
    private Land setLandRowToEntity(ResultSet rset) throws SQLException {
 
       Land land = new Land();
-      land.setLandID(rset.getLong("landId"));
+      land.setLandID(rset.getLong("landID"));
       land.setSize(rset.getDouble("size"));
       land.setBuildUpArea(rset.getDouble("BuildUpArea"));
-      land.setCatastralArea(rset.getString("CatastralArea"));
-      land.setType(rset.getString("Type"));
-      land.setNotes(rset.getString("Notes"));
+      land.setCatastralArea(rset.getString("catastralArea"));
+      land.setType(rset.getString("land_type"));
+      land.setNotes(rset.getString("notes"));
       return land;
    }
 
@@ -316,7 +315,7 @@ public class LandDaoImpl extends GenericDaoImpl implements LandDao {
     */
    private void printListOfLands(List<Land> list) {
       LOGGER.debug("____________________________________________________");
-      LOGGER.debug("TABULKA PERSON : ");
+      LOGGER.debug("TABULKA Land : ");
       for (Land l : list) {
          LOGGER.debug(l.toString());
       }

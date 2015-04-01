@@ -84,7 +84,7 @@ public class OwnershipDaoImpl extends GenericDaoImpl implements OwnershipDao {
       sql.append(" personID = ?,");
       sql.append(" landId = ?,");
       sql.append(" start_date = ?,");
-      sql.append(" end_date = ?,");
+      sql.append(" end_date = ?");
       sql.append(" WHERE  ownerShipID = ? ");
 
       Connection conn = null;
@@ -251,6 +251,21 @@ public class OwnershipDaoImpl extends GenericDaoImpl implements OwnershipDao {
    private Boolean validateOwnership(Ownership ownership)
          throws EntityException {
 
+      
+      if (ownership.getPersonID()==null) {
+         throw new EntityException("Cannot create ownership with person ID = null");
+      }
+
+      if (ownership.getLandId()==null) {
+         throw new EntityException("Cannot create ownership with land ID = null");
+      }
+      if (ownership.getStartDate() == null){
+         throw new EntityException("Cannot create ownership with StartDate = null");
+      }
+      //TODO REVALIDE CONDITION
+      if (ownership.getStartDate() != null && ownership.getEndDate()!=null && ownership.getStartDate().compareTo(ownership.getEndDate())<0){
+         throw new EntityException("Cannot create ownership with StartDate>ENDDATE");
+      }
       return true;
    }
 
@@ -329,7 +344,7 @@ public class OwnershipDaoImpl extends GenericDaoImpl implements OwnershipDao {
    @Override
    public void dropTableOwnership() throws DatabaseException {
       StringBuilder sql = new StringBuilder();
-      sql.append("drop table proj.person");
+      sql.append("drop table proj.Ownership");
       connectAndExecute(sql.toString());
       LOGGER.debug("Table Ownership dropped");
 

@@ -61,10 +61,6 @@ public class LandManagerImplTest {
    }
 
    @Test
-   public void test() {
-      fail("Not yet implemented");
-   }
-
    public void testInputLand() {     
       try {
          System.out.println("-------------------------------");
@@ -95,12 +91,13 @@ public class LandManagerImplTest {
    public void testInvalidInput(){
       System.out.println("-------------------------------");
       System.out.println("TEST : testInvalidInput");
+      
       l2.setSize(new Double (-1));
       try {
          lm.createLand(l2);
-         fail("Ivalid name");
+         fail("Ivalid size");
       } catch (DatabaseException e) {
-         System.out.println("Catched Invalid Name");
+         System.out.println("Catched Invalid size");
       }
       l2.setSize(new Double("1"));
       
@@ -109,16 +106,16 @@ public class LandManagerImplTest {
          lm.createLand(l2);
          fail("Ivalid Surname");
       } catch (DatabaseException e) {
-         System.out.println("Catched Invalid Surname");
+         System.out.println("Catched Invalid BuildUpArea");
       }
       l2.setBuildUpArea(new Double(1));
       
       l2.setCatastralArea("");
       try {
          lm.createLand(l2);
-         fail("Ivalid Date");
+         fail("Ivalid CatastralArea");
       } catch (DatabaseException e) {
-         System.out.println("Catched Invalid Date");
+         System.out.println("Catched Invalid CatastralArea");
       }
       l2.setCatastralArea("Slovakia");
       

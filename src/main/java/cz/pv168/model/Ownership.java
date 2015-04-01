@@ -70,11 +70,6 @@ public class Ownership implements Serializable{
       if (getClass() != obj.getClass())
          return false;
       Ownership other = (Ownership) obj;
-      if (endDate == null) {
-         if (other.endDate != null)
-            return false;
-      } else if (!endDate.equals(other.endDate))
-         return false;
       if (landId == null) {
          if (other.landId != null)
             return false;
@@ -90,11 +85,7 @@ public class Ownership implements Serializable{
             return false;
       } else if (!personID.equals(other.personID))
          return false;
-      if (startDate == null) {
-         if (other.startDate != null)
-            return false;
-      } else if (!startDate.equals(other.startDate))
-         return false;
+      
       return true;
    }
    @Override
