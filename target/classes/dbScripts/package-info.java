@@ -1,8 +1,0 @@
-/**
- * 
- */
-/**
- * @author Tomas
- *
- */
-package dbScripts;

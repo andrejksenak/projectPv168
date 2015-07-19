@@ -15,11 +15,11 @@ public class LandManagerImpl implements LandManager {
 
    private LandDao landDao;
    
-   DataSource ds;
+   private DataSource ds;
    
    public LandManagerImpl(){
 	   ds = ConnectorDB.initDatasource(); 
-       landDao = new LandDaoImpl(ds);
+      landDao = new LandDaoImpl(ds);
    }
    
    public void createLand(Land land) throws DatabaseException {
@@ -47,6 +47,16 @@ public class LandManagerImpl implements LandManager {
    public List<Land> getLandByArea(String catastralArea) throws DatabaseException {
       return landDao.getLandByArea(catastralArea);
    }
+   
+
+   public void dropTableLand() throws DatabaseException {
+      landDao.dropTableLand();
+   }
+ 
+   public void createTableLand() throws DatabaseException {
+      landDao.createTableLand();
+   }
+
    
 
 }

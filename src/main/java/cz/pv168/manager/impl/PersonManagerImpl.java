@@ -15,7 +15,7 @@ public class PersonManagerImpl implements PersonManager {
 
    private PersonDao personDao;
 
-   DataSource        ds;
+   private DataSource        ds;
    /**
     * 
     */

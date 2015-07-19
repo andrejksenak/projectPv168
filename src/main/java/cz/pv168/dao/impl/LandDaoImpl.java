@@ -15,203 +15,230 @@ import org.slf4j.LoggerFactory;
 
 import cz.pv168.dao.LandDao;
 import cz.pv168.model.Land;
-import cz.pv168.model.Person;
 import cz.pv168.utils.ConnectorDB;
 import cz.pv168.utils.DatabaseException;
 import cz.pv168.utils.EntityException;
 
 public class LandDaoImpl extends GenericDaoImpl implements LandDao {
-	
-	private static Logger LOGGER = LoggerFactory.getLogger(LandDaoImpl.class);
 
+   private static Logger LOGGER = LoggerFactory.getLogger(LandDaoImpl.class);
+
+   /**
+    * 
+    * @param dataSource
+    */
    public LandDaoImpl(DataSource dataSource) {
       super(dataSource);
    }
-  
-	public void createLand(Land land) throws DatabaseException {
-		StringBuilder sql = new StringBuilder();
-	      sql.append("INSERT INTO Proj.LAND ");
-	      sql.append("(size,buildUpArea,catastralArea,land_type,notes)");
-	      sql.append(" VALUES (?,?,?,?,?) ");
 
-	      Connection conn = null;
-	      PreparedStatement st = null;
-	      try {
-	         validateLand(land);
-	         conn = dataSource.getConnection();
-	         conn.setAutoCommit(false);
+   /**
+   * 
+   */
+   public void createLand(Land land) throws DatabaseException {
+      StringBuilder sql = new StringBuilder();
+      sql.append("INSERT INTO Proj.LAND ");
+      sql.append("(size,buildUpArea,catastralArea,land_type,notes)");
+      sql.append(" VALUES (?,?,?,?,?) ");
 
-	         st = conn.prepareStatement(sql.toString(),
-	               Statement.RETURN_GENERATED_KEYS);
-	         setStatementFromLand(st, land, false);
+      Connection conn = null;
+      PreparedStatement st = null;
+      try {
+         validateLand(land);
+         conn = dataSource.getConnection();
+         conn.setAutoCommit(false);
 
-	         if (st.executeUpdate() != 1) {
-	            throw new DatabaseException(
-	                  "Internal Error: more or none rows were inserted "
-	                        + land.toString());
-	         }
-	         ResultSet rset = st.getGeneratedKeys();
-	         rset.next();
-	         land.setLandID(rset.getLong(1));
+         st = conn.prepareStatement(sql.toString(),
+               Statement.RETURN_GENERATED_KEYS);
+         setStatementFromLand(st, land, false);
 
-	         conn.commit();
+         if (st.executeUpdate() != 1) {
+            throw new DatabaseException(
+                  "Internal Error: more or none rows were inserted "
+                        + land.toString());
+         }
+         ResultSet rset = st.getGeneratedKeys();
+         rset.next();
+         land.setLandID(rset.getLong(1));
 
-	      } catch (SQLException | EntityException e) {
-	         throw new DatabaseException("db connection problem" + e);
-	      } finally {
-	         ConnectorDB.close(conn, st);
-	      }
+         conn.commit();
 
-	      LOGGER.debug("Person created : " + land.toString());
-	}
+      } catch (SQLException | EntityException e) {
+         throw new DatabaseException("db connection problem" + e);
+      } finally {
+         ConnectorDB.close(conn, st);
+      }
 
-	public void updateLand(Land land) throws DatabaseException {
-		StringBuilder sql = new StringBuilder();
-	      sql.append(" UPDATE LAND ");
-	      sql.append(" SET  ");
-	      sql.append(" size = ?,");
-	      sql.append(" buildUpArea = ?,");
-	      sql.append(" catastralArea = ?,");
-	      sql.append(" land_type = ?,");
-	      sql.append(" notes = ? ");
-	      sql.append(" WHERE  landID = ? ");
+      LOGGER.debug(" created : " + land.toString());
+   }
 
-	      Connection conn = null;
-	      PreparedStatement st = null;
-	      try {
-	         
-	         validateLand(land);
-	         
-	         conn = dataSource.getConnection();
-	         conn.setAutoCommit(false);
-	         st = conn.prepareStatement(sql.toString(),
-	               Statement.RETURN_GENERATED_KEYS);
-	         setStatementFromLand(st, land, true);
-	         st.executeUpdate();
-	         conn.commit();
-	      } catch (SQLException | EntityException e1) {
-	         throw new DatabaseException("db connection problem" + e1);
-	      } finally {
-	         ConnectorDB.close(conn, st);
-	      }
+   /**
+    * 
+    */
+   public void updateLand(Land land) throws DatabaseException {
+      StringBuilder sql = new StringBuilder();
+      sql.append(" UPDATE LAND ");
+      sql.append(" SET  ");
+      sql.append(" size = ?,");
+      sql.append(" buildUpArea = ?,");
+      sql.append(" catastralArea = ?,");
+      sql.append(" land_type = ?,");
+      sql.append(" notes = ? ");
+      sql.append(" WHERE  landID = ? ");
 
-	      LOGGER.debug("Land UPDATED");
-	}
-	public void removeLand(Land land) throws DatabaseException {
-		  StringBuilder sql = new StringBuilder();
-	      sql.append(" DELETE FROM LAND");
-	      sql.append(" WHERE landID = ? ");
+      Connection conn = null;
+      PreparedStatement st = null;
+      try {
 
-	      Connection conn = null;
-	      PreparedStatement st = null;
-	      try {
-	         conn = dataSource.getConnection();
-	         conn.setAutoCommit(false);
-	         st = conn.prepareStatement(sql.toString(),
-	               Statement.RETURN_GENERATED_KEYS);
-	         st.setLong(1, land.getLandID());
-	         st.executeUpdate();
-	         conn.commit();
-	      } catch (SQLException e1) {
-	         throw new DatabaseException("db connection problem" + e1);
-	      } finally {
-	         ConnectorDB.close(conn, st);
-	      }
-	      LOGGER.debug("Land with id :" + land.getLandID() + "  removed");
-	}
-	public Land getLandById(Long id) throws DatabaseException{
-		StringBuilder sql = new StringBuilder();
-	      Land land = null;
-	      sql.append(" SELECT size,buildUpArea,catastralArea,land_type,notes");
-	      sql.append(" FROM Land ");
-	      sql.append(" WHERE landID = ? ");
+         validateLand(land);
 
-	      Connection conn = null;
-	      PreparedStatement st = null;
-	      try {
-	         conn = dataSource.getConnection();
-	         st = conn.prepareStatement(sql.toString(),
-	               Statement.RETURN_GENERATED_KEYS);
-	         st.setLong(1, id);
+         conn = dataSource.getConnection();
+         conn.setAutoCommit(false);
+         st = conn.prepareStatement(sql.toString(),
+               Statement.RETURN_GENERATED_KEYS);
+         setStatementFromLand(st, land, true);
+         st.executeUpdate();
+         conn.commit();
+      } catch (SQLException | EntityException e1) {
+         throw new DatabaseException("db connection problem" + e1);
+      } finally {
+         ConnectorDB.close(conn, st);
+      }
 
-	         ResultSet rset = st.executeQuery();
-	         while (rset.next()) {
-	            land = setLandRowToEntity(rset);
-	         }
+      LOGGER.debug("Land UPDATED");
+   }
 
-	      } catch (SQLException e1) {
-	         throw new DatabaseException("db connection problem" + e1);
-	      } finally {
-	         ConnectorDB.close(conn, st);
-	      }
+   /**
+	 * 
+	 */
+   public void removeLand(Land land) throws DatabaseException {
+      StringBuilder sql = new StringBuilder();
+      sql.append(" DELETE FROM LAND");
+      sql.append(" WHERE landID = ? ");
 
-	      if (land == null) {
-	         throw new DatabaseException("Person is not existing. ID : " + id);
-	      } else {
-	         LOGGER.debug("Person with id :" + id + "  -   " + land.toString());
-	      }
-	      return land;
-	}
+      Connection conn = null;
+      PreparedStatement st = null;
+      try {
+         conn = dataSource.getConnection();
+         conn.setAutoCommit(false);
+         st = conn.prepareStatement(sql.toString(),
+               Statement.RETURN_GENERATED_KEYS);
+         st.setLong(1, land.getLandID());
+         st.executeUpdate();
+         conn.commit();
+      } catch (SQLException e1) {
+         throw new DatabaseException("db connection problem" + e1);
+      } finally {
+         ConnectorDB.close(conn, st);
+      }
+      LOGGER.debug("Land with id :" + land.getLandID() + "  removed");
+   }
 
-	public List<Land> getLandList() throws DatabaseException{
-		  StringBuilder sql = new StringBuilder();
-	      List<Land> list = new ArrayList<Land>();
-	      sql.append(" SELECT size,buildUpArea,catastralArea,land_type,notes");
-	      sql.append(" FROM Land ");
-	
-	      Connection conn = null;
-	      PreparedStatement st = null;
-	      try {
-	         conn = dataSource.getConnection();
-	         st = conn.prepareStatement(sql.toString(),
-	               Statement.RETURN_GENERATED_KEYS);
-	         ResultSet rset = st.executeQuery();
-	         while (rset.next()) {
-	            list.add(setLandRowToEntity(rset));
-	         }
-	
-	      } catch (SQLException e1) {
-	         throw new DatabaseException("db connection problem" + e1);
-	      } finally {
-	         ConnectorDB.close(conn, st);
-	      }
-	
-	      printListOfLands(list);
-	      return list;
-	}
+   /**
+	 * 
+	 */
+   public Land getLandById(Long id) throws DatabaseException {
+      StringBuilder sql = new StringBuilder();
+      Land land = null;
+      sql.append(" SELECT landID,size,buildUpArea,catastralArea,land_type,notes");
+      sql.append(" FROM Land ");
+      sql.append(" WHERE landID = ? ");
 
-	public List<Land> getLandByArea(String catastralArea) throws DatabaseException{
-		  StringBuilder sql = new StringBuilder();
-	      List<Land> list = new ArrayList<Land>();
-	      sql.append(" SELECT size,buildUpArea,catastralArea,land_type,notes");
-	      sql.append(" FROM Land ");
-	      sql.append(" WHERE catastralArea = ? ");
+      Connection conn = null;
+      PreparedStatement st = null;
+      try {
+         conn = dataSource.getConnection();
+         st = conn.prepareStatement(sql.toString(),
+               Statement.RETURN_GENERATED_KEYS);
+         st.setLong(1, id);
 
-	      Connection conn = null;
-	      PreparedStatement st = null;
+         ResultSet rset = st.executeQuery();
+         while (rset.next()) {
+            land = setLandRowToEntity(rset);
+         }
 
-	      try {
-	         conn = dataSource.getConnection();
-	         st = conn.prepareStatement(sql.toString(),
-	               Statement.RETURN_GENERATED_KEYS);
-	         st.setString(1, catastralArea);
+      } catch (SQLException e1) {
+         throw new DatabaseException("getLandById : db connection problem" + e1);
+      } finally {
+         ConnectorDB.close(conn, st);
+      }
 
-	         ResultSet rset = st.executeQuery();
-	         while (rset.next()) {
-	            list.add(setLandRowToEntity(rset));
-	         }
+      if (land == null) {
+         throw new DatabaseException("Land is not existing. ID : " + id);
+      } else {
+         LOGGER.debug("Land with id :" + id + "  -   " + land.toString());
+      }
+      return land;
+   }
 
-	      } catch (SQLException e1) {
-	         throw new DatabaseException("db connection problem" + e1);
-	      } finally {
-	         ConnectorDB.close(conn, st);
-	      }
+   /**
+	 * 
+	 */
+   public List<Land> getLandList() throws DatabaseException {
+      StringBuilder sql = new StringBuilder();
+      List<Land> list = new ArrayList<Land>();
+      sql.append(" SELECT landID,size,buildUpArea,catastralArea,land_type,notes");
+      sql.append(" FROM Land ");
 
-	      printListOfLands(list);
-	      return list;
-	}
-	
-	public void createTableLand() throws DatabaseException {
+      Connection conn = null;
+      PreparedStatement st = null;
+      try {
+         conn = dataSource.getConnection();
+         st = conn.prepareStatement(sql.toString(),
+               Statement.RETURN_GENERATED_KEYS);
+         ResultSet rset = st.executeQuery();
+         while (rset.next()) {
+            list.add(setLandRowToEntity(rset));
+         }
+
+      } catch (SQLException e1) {
+         throw new DatabaseException("db connection problem" + e1);
+      } finally {
+         ConnectorDB.close(conn, st);
+      }
+
+      printListOfLands(list);
+      return list;
+   }
+
+   /**
+    * 
+    */
+   public List<Land> getLandByArea(String catastralArea)
+         throws DatabaseException {
+      StringBuilder sql = new StringBuilder();
+      List<Land> list = new ArrayList<Land>();
+      sql.append(" SELECT size,buildUpArea,catastralArea,land_type,notes");
+      sql.append(" FROM Land ");
+      sql.append(" WHERE catastralArea = ? ");
+
+      Connection conn = null;
+      PreparedStatement st = null;
+
+      try {
+         conn = dataSource.getConnection();
+         st = conn.prepareStatement(sql.toString(),
+               Statement.RETURN_GENERATED_KEYS);
+         st.setString(1, catastralArea);
+
+         ResultSet rset = st.executeQuery();
+         while (rset.next()) {
+            list.add(setLandRowToEntity(rset));
+         }
+
+      } catch (SQLException e1) {
+         throw new DatabaseException("db connection problem" + e1);
+      } finally {
+         ConnectorDB.close(conn, st);
+      }
+
+      printListOfLands(list);
+      return list;
+   }
+
+   /**
+	 * 
+	 */
+   public void createTableLand() throws DatabaseException {
 
       StringBuilder sql = new StringBuilder();
       sql.append("create table proj.Land (");
@@ -228,7 +255,10 @@ public class LandDaoImpl extends GenericDaoImpl implements LandDao {
    }
 
    // ==============================================================================================-
-   public void droptableLand() throws DatabaseException {
+   /**
+	 * 
+	 */
+   public void dropTableLand() throws DatabaseException {
 
       StringBuilder sql = new StringBuilder();
       sql.append("drop table proj.land");
@@ -242,20 +272,20 @@ public class LandDaoImpl extends GenericDaoImpl implements LandDao {
    // ==============================================================================================
    /**
     * 
-    * @param person
+    * @param Land
     * @return
     * @throws EntityException
     */
    private Boolean validateLand(Land land) throws EntityException {
 
       StringBuilder errMsg = new StringBuilder();
-      if (land.getSize() == null ) {
+      if (land.getSize() == null || land.getSize() < 0) {
          errMsg.append("Validation Error : Size of land is Empty  \n");
       }
-      if (land.getBuildUpArea() == null ) {
+      if (land.getBuildUpArea() == null || land.getBuildUpArea() < 0) {
          errMsg.append("Validation Error : BuildUpArea of land is Empty  \n");
       }
-      if (land.getCatastralArea() == null) {
+      if (land.getCatastralArea() == null || land.getCatastralArea().isEmpty()) {
          errMsg.append("Validation Error : CatastralArea of land is Empty  \n");
       }
       if (land.getType() == null || "".equals(land.getType())) {
@@ -280,12 +310,12 @@ public class LandDaoImpl extends GenericDaoImpl implements LandDao {
    private Land setLandRowToEntity(ResultSet rset) throws SQLException {
 
       Land land = new Land();
-      land.setLandID(rset.getLong("landId"));
+      land.setLandID(rset.getLong("landID"));
       land.setSize(rset.getDouble("size"));
       land.setBuildUpArea(rset.getDouble("BuildUpArea"));
-      land.setCatastralArea(rset.getString("CatastralArea"));
-      land.setType(rset.getString("Type"));
-      land.setNotes(rset.getString("Notes"));
+      land.setCatastralArea(rset.getString("catastralArea"));
+      land.setType(rset.getString("land_type"));
+      land.setNotes(rset.getString("notes"));
       return land;
    }
 
@@ -316,7 +346,7 @@ public class LandDaoImpl extends GenericDaoImpl implements LandDao {
     */
    private void printListOfLands(List<Land> list) {
       LOGGER.debug("____________________________________________________");
-      LOGGER.debug("TABULKA PERSON : ");
+      LOGGER.debug("TABULKA Land : ");
       for (Land l : list) {
          LOGGER.debug(l.toString());
       }
